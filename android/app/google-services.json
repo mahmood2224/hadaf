@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1032147657383",
+    "project_id": "hadaf-cb749",
+    "storage_bucket": "hadaf-cb749.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1032147657383:android:a3a63453bb06646ff5b182",
+        "android_client_info": {
+          "package_name": "com.iraqsoft.hadaf"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1032147657383-u774cjui8dbll5in6qr1ci77shr7gncg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD4ApktPOHmFph_I4f8tsR51iL5ehUKTbI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1032147657383-u774cjui8dbll5in6qr1ci77shr7gncg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
