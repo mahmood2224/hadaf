@@ -77,7 +77,7 @@ class _HomeState extends State<Home> {
           InkWell(
               onTap: () => ShowDialog(
                   context: context,
-                  height: 200,
+                  height: 380,
                   radius: BorderRadius.circular(16),
                   child: AddPinCode(
                     onSuccess: _getCodes,

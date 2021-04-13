@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hadaf/data/models/counts_model.dart';
 import 'package:hadaf/data/models/home_codes.dart';
+import 'package:hadaf/data/models/node_order_response.dart';
 import 'package:hadaf/data/models/order_model.dart';
 import 'package:hadaf/ui/views/product.dart';
 import 'package:hadaf/ui/widgets/app_bar.dart';
@@ -11,8 +13,8 @@ import 'package:hadaf/utils/colors.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 class ProductDetails extends StatefulWidget {
-  Order order;
-  CodeModel code;
+  NodeOrder order;
+  Count code;
 
   ProductDetails(this.order, this.code);
 
@@ -38,7 +40,7 @@ class _ProductDetailsState extends State<ProductDetails> {
       key: _scaffoldKey,
       appBar: HadafAppBar(context,
           title:
-              "Product_details".tr() + " - ${widget.order?.shipingNr ?? ""}"),
+              "Product_details".tr() + " - ${widget.order?.shiping_Nr ?? ""}"),
       body: Container(
         height: height,
         decoration: BoxDecoration(
@@ -48,14 +50,14 @@ class _ProductDetailsState extends State<ProductDetails> {
             child: Column(
               children: [
                 Container(
-                  color: widget.code?.codeColor,
+                  color: widget.code?.color,
                   height: 48,
                   padding: EdgeInsets.symmetric(horizontal: 16),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Text(
-                        "${widget.code?.name}",
+                        "${widget.code?.status_name}",
                         style: TextStyle(
                             color: Colors.white, fontWeight: FontWeight.bold),
                       )
@@ -98,7 +100,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                                       ),
                                     ),
                                     Text(
-                                      '${widget?.order?.shipingNr ?? 00000}',
+                                      '${widget?.order?.shiping_Nr ?? 00000}',
                                       style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold,
@@ -169,7 +171,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                                   fontWeight: FontWeight.w500),
                             ),
                             Text(
-                              "${widget.order?.provinceName ?? ""} - ${widget.order?.zoonName ?? ""}",
+                              "${widget.order?.province_name ?? ""} - ${widget.order?.zoon_name ?? ""}",
                               style: TextStyle(
                                   fontSize: 14, fontWeight: FontWeight.bold),
                             )
@@ -201,7 +203,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                                   fontWeight: FontWeight.w500),
                             ),
                             Text(
-                              "${widget.order?.adressResiver}",
+                              "${widget.order?.adress_resiver}",
                               style: TextStyle(
                                   fontSize: 14, fontWeight: FontWeight.bold),
                             )
@@ -234,7 +236,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                             ),
                             InkWell(
                               onTap: () => launchURL(
-                                  "tel://${widget?.order?.phoneResiver}"),
+                                  "tel://${widget?.order?.phone_resiver}"),
                               child: Container(
                                 width: 127,
                                 height: 32,
@@ -253,7 +255,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                                       width: 8,
                                     ),
                                     Text(
-                                      "${widget?.order?.phoneResiver}",
+                                      "${widget?.order?.phone_resiver}",
                                       style: TextStyle(
                                           fontSize: 10,
                                           fontWeight: FontWeight.w500,
@@ -297,7 +299,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                               style:
                                   TextStyle(fontSize: 12, color: Colors.grey),
                             ),
-                            Text("${widget.order?.adressResiver}",
+                            Text("${widget.order?.adress_resiver}",
                                 style: TextStyle(
                                     fontSize: 16, fontWeight: FontWeight.bold))
                           ],
@@ -337,7 +339,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                                       fontSize: 12, color: Colors.grey),
                                 ),
                                 Text(
-                                  " ${widget.order?.totalPrice} " + "cr".tr(),
+                                  " ${widget.order?.total_price} " + "cr".tr(),
                                   style: TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold),
@@ -372,7 +374,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                                   fontWeight: FontWeight.w500),
                             ),
                             Text(
-                              "${widget.order?.priceShipping}",
+                              "${widget.order?.price_shipping}",
                               style: TextStyle(
                                   fontSize: 14, fontWeight: FontWeight.bold),
                             )
@@ -393,11 +395,11 @@ class _ProductDetailsState extends State<ProductDetails> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      widget.order?.withPhone == null
+                      widget.order?.with_phone == null
                           ? Container()
                           : InkWell(
                               onTap: () =>
-                                  launchURL("tel://${widget.order?.withPhone}"),
+                                  launchURL("tel://${widget.order?.with_phone}"),
                               child: Container(
                                 height: 48,
                                 width: (width / 2) - 32 - 8,
@@ -442,7 +444,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                       ),
                       InkWell(
                         onTap: () =>
-                            launchURL("tel://${widget.order?.phoneResiver}"),
+                            launchURL("tel://${widget.order?.phone_resiver}"),
                         child: Container(
                           height: 48,
                           width: (width / 2) - 32 - 8,

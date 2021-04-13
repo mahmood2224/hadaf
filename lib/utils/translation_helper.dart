@@ -7,7 +7,7 @@ void main(){
 }
 
 void _searchAndTranslation({Directory dir }){
-  Directory project = dir ?? new Directory("D:/FlutterProject/hadaf/lib");
+  Directory project = dir ?? new Directory("G:/FlutterProject/Delivery_Apps/hadaf/lib");
   List contents = project.listSync();
   for(var dirOrFile in contents){
     if(dirOrFile is File){
@@ -23,8 +23,8 @@ void _translate({File file}) async {
   String content = await file.readAsString();
   RegExp regExp = new RegExp('"[(A-Z)(a-z)_]+"\.tr\(\)');
   Iterable<RegExpMatch> matches = regExp.allMatches(content);
-  File arFile = new File("D:/FlutterProject/hadaf/assets/lang/ar-SA.json");
-  File enFile = new File("D:/FlutterProject/hadaf/assets/lang/en-US.json");
+  File arFile = new File("G:/FlutterProject/Delivery_Apps/hadaf/assets/lang/ar-SA.json");
+  File enFile = new File("G:/FlutterProject/Delivery_Apps/hadaf/assets/lang/en-US.json");
   Map<String,dynamic> jsonAr = json.decode(arFile.readAsStringSync());
   Map<String,dynamic> jsonEn = json.decode(enFile.readAsStringSync());
 

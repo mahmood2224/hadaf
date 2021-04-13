@@ -7,6 +7,7 @@ import 'package:hadaf/data/models/auth_model.dart';
 import 'package:hadaf/data/models/auth_send_model.dart';
 import 'package:hadaf/data/models/generalModel.dart';
 import 'package:hadaf/data/models/home_codes.dart';
+import 'package:hadaf/data/models/node_code_response.dart';
 import 'package:hadaf/data/models/notification_models.dart';
 import 'package:hadaf/data/models/order_model.dart';
 import 'package:hadaf/data/models/status_model.dart';
@@ -241,7 +242,7 @@ class ApiProvider {
   }
 
   static void addCode(
-      {@required String code, onSuccess(), onError(String error)}) async {
+      {@required String code, @required NodeCode codeData, onSuccess(), onError(String error)}) async {
     //API Calling
     String lang = await getLanguage();
     String token = await getToken();
@@ -249,7 +250,7 @@ class ApiProvider {
     headers = {"Authorization": "Bearer $token", "lang": lang, ...apiHeaders};
 
     //data
-    var data = json.encode({"pin_code": code});
+    var data = json.encode({"pin_code": code , "account_code" : codeData.account_id , "account_name" : codeData.full_name , "type" : codeData.type});
     http.Response response = await http.post("$BASE_URL$CREATE_CODE_END_POINT",
         body: data, headers: headers);
 
@@ -348,51 +349,51 @@ class ApiProvider {
     }
   }
 
-  static void getOrdersFilter(
-      {@required String accountNum,
-        @required FilterResult result,
-        onSuccess(List<Order> orders),
-        onError(String error)}) async {
-    //API Calling
-    String lang = await getLanguage();
-    String token = await getToken();
-    var headers;
-    headers = {"Authorization": "Bearer $token", "lang": lang, ...apiHeaders};
-
-    //data
-    var data = json.encode({
-      "account_num" : accountNum ,
-      "zone_id" : result?.zone?.id ,
-      "id" :result?.value,
-      "phone_number" :result?.value,
-      "type" : result.type
-    });
-    http.Response response = await http.post(
-        "$BASE_URL$ORDERS_FILTER_END_POINT",
-        body: data,
-        headers: headers);
-
-    // Decoding Response.
-    Map<String, dynamic> decoded = json.decode(response.body);
-
-    // Debugging API response
-    debugApi(
-        methodName: "getOrdersWithFilter",
-        statusCode: response.statusCode,
-        response: decoded,
-        data: data,
-        endPoint: response.request.url,
-        headers: headers);
-
-    //exporting data into model
-    OrderResponse responseModel =
-    decoded == null ? null : OrderResponse.fromJson(decoded);
-    if (isValidResponse(response.statusCode) && responseModel.status == 1) {
-      onSuccess(responseModel.data);
-    } else {
-      onError(responseModel.message);
-    }
-  }
+  // static void getOrdersFilter(
+  //     {@required String accountNum,
+  //       @required FilterResult result,
+  //       onSuccess(List<Order> orders),
+  //       onError(String error)}) async {
+  //   //API Calling
+  //   String lang = await getLanguage();
+  //   String token = await getToken();
+  //   var headers;
+  //   headers = {"Authorization": "Bearer $token", "lang": lang, ...apiHeaders};
+  //
+  //   //data
+  //   var data = json.encode({
+  //     "account_num" : accountNum ,
+  //     "zone_id" : result?.zone?.id ,
+  //     "id" :result?.value,
+  //     "phone_number" :result?.value,
+  //     "type" : result.type
+  //   });
+  //   http.Response response = await http.post(
+  //       "$BASE_URL$ORDERS_FILTER_END_POINT",
+  //       body: data,
+  //       headers: headers);
+  //
+  //   // Decoding Response.
+  //   Map<String, dynamic> decoded = json.decode(response.body);
+  //
+  //   // Debugging API response
+  //   debugApi(
+  //       methodName: "getOrdersWithFilter",
+  //       statusCode: response.statusCode,
+  //       response: decoded,
+  //       data: data,
+  //       endPoint: response.request.url,
+  //       headers: headers);
+  //
+  //   //exporting data into model
+  //   OrderResponse responseModel =
+  //   decoded == null ? null : OrderResponse.fromJson(decoded);
+  //   if (isValidResponse(response.statusCode) && responseModel.status == 1) {
+  //     onSuccess(responseModel.data);
+  //   } else {
+  //     onError(responseModel.message);
+  //   }
+  // }
 
 
   static void getZones(

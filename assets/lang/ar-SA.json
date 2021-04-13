@@ -68,4 +68,9 @@
 "delete_company":"هل انت متاكد من حذف الشركة ؟",
 "cr":"د.ع",
 "call_reciver":"اتصل بالمستلم",
-"call_driver":"اتصب بالمندوب"}
+"call_driver":"اتصب بالمندوب",
+"phone_num":"رقم الهاتف",
+"phone_num_ex":"من فضلك ادخل رقم الهاتف",
+"branch_id":"الرقم التعريفي للفرع",
+"branch_id_ex":"مثال : 1",
+"flutter_by_zosne":"flutter by zosne"}

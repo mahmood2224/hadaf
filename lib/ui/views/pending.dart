@@ -2,7 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hadaf/data/api_provider.dart';
+import 'package:hadaf/data/models/counts_model.dart';
+import 'package:hadaf/data/models/node_order_response.dart';
 import 'package:hadaf/data/models/order_model.dart';
+import 'package:hadaf/data/node_api_provider.dart';
 import 'package:hadaf/ui/views/filter_page.dart';
 import 'package:hadaf/ui/views/product.dart';
 import 'package:hadaf/ui/views/product_details.dart';
@@ -15,11 +18,11 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class Pending extends StatefulWidget {
-  CodeModel code;
-  String accountNum;
-  FilterResult filterResult;
-
-  Pending({this.code, this.accountNum, this.filterResult});
+  String accountId;
+  int status ;
+  String name ;
+  Count cont ;
+  Pending({this.status , this.accountId ,this.name , this.cont});
 
   @override
   _PendingState createState() {
@@ -32,60 +35,47 @@ class _PendingState extends State<Pending> {
 
   bool _loading = false;
 
-  int _pageNum = 1;
-  int _maxPages = 1;
-
-  List<Order> orders = [];
+  List<NodeOrder> orders = [];
 
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
-
-  ScrollController controller;
 
   int balance = 0;
   @override
   void initState() {
     super.initState();
-    if (widget.filterResult == null)
       _getOrders();
-    else
-      _getOrdersFilter(widget.filterResult);
-    controller = new ScrollController()..addListener(_scrollListener);
   }
 
-  _getOrders({bool isRefresh = false}) {
+  _getOrders({bool isRefresh = false , String phoneNum , int zoneId}) {
     setState(() => _loading = true);
-    ApiProvider.getOrders(
-        accountNum: widget.accountNum,
-        status: widget.code.code,
+    NodeApiProvider.getOrders(
+        accountId: widget.accountId,
+        status: widget.status,
+        phoneNum: (phoneNum?.isEmpty??true) ? null : phoneNum,
+        zoneId: zoneId,
         onError: (error) => setState(() => _loading = false),
         onSuccess: (orders) => setState(() {
               _loading = false;
               this.orders = orders;
               this.orders.forEach((element) =>
-                  setState(() => this.balance += element?.totalPrice ?? 0.0));
+                  setState(() => this.balance += element?.total_price ?? 0.0));
             }));
     if (isRefresh) _refreshController.refreshCompleted();
   }
 
-  _getOrdersFilter(FilterResult result) {
-    setState(() => _loading = true);
-    ApiProvider.getOrdersFilter(
-        accountNum: widget.accountNum,
-        result: result,
-        onError: (error) => setState(() => _loading = false),
-        onSuccess: (orders) => setState(() {
-              _loading = false;
-              this.orders = orders;
-            }));
-  }
+  // _getOrdersFilter(FilterResult result) {
+  //   setState(() => _loading = true);
+  //   ApiProvider.getOrdersFilter(
+  //       accountNum: widget.accountNum,
+  //       result: result,
+  //       onError: (error) => setState(() => _loading = false),
+  //       onSuccess: (orders) => setState(() {
+  //             _loading = false;
+  //             this.orders = orders;
+  //           }));
+  // }
 
-  void _scrollListener() {
-    if (controller.position.extentAfter < 200) {
-      this._pageNum++;
-      if (this._pageNum > this._maxPages) return;
-    } else {}
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -94,7 +84,13 @@ class _PendingState extends State<Pending> {
 
     return Scaffold(
       key: _scaffoldKey,
-      appBar: HadafAppBar(context, title: "${widget.code?.name ?? "البحث"}"),
+      appBar: HadafAppBar(context, title: "${widget.name?? "البحث"}" ,actions: [
+        IconButton(icon: Icon(FontAwesomeIcons.filter ,size: 20,), onPressed: ()=>{
+          Navigator.of(context).push(MaterialPageRoute(builder: (context)=>FilterPage((FilterResult result){
+              _getOrders(phoneNum: result.value , zoneId: result?.zone?.id);
+          })))
+        })
+      ]),
       body: Container(
         height: height,
         decoration: BoxDecoration(
@@ -153,7 +149,7 @@ class _PendingState extends State<Pending> {
                                               textAlign: TextAlign.start,
                                             ),
                                             Text(
-                                              '${widget.code?.count ?? 0}' +
+                                              '${widget.cont?.count ?? 0}' +
                                                   "order".tr(),
                                               style: TextStyle(
                                                   fontSize: 14,
@@ -214,18 +210,17 @@ class _PendingState extends State<Pending> {
                               height: 8,
                             ),
                             ListView.builder(
-                              controller: controller,
                               shrinkWrap: true,
                               physics: NeverScrollableScrollPhysics(),
                               padding: EdgeInsets.symmetric(horizontal: 15),
                               itemCount: this.orders?.length ?? 0,
                               itemBuilder: (context, index) {
-                                Order order = this.orders[index];
+                                NodeOrder order = this.orders[index];
                                 return InkWell(
                                   onTap: () => Navigator.of(context).push(
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              ProductDetails(order ,widget.code))),
+                                              ProductDetails(order ,widget.cont))),
                                   child: Container(
                                     width: width,
                                     padding: EdgeInsets.symmetric(
@@ -271,7 +266,7 @@ class _PendingState extends State<Pending> {
                                                             ),
                                                           ),
                                                           Text(
-                                                            '${order?.shipingNr ?? 00000}',
+                                                            '${order?.shiping_Nr ?? 00000}',
                                                             style: TextStyle(
                                                               fontSize: 16,
                                                               fontWeight:
@@ -290,14 +285,14 @@ class _PendingState extends State<Pending> {
                                             ),
                                             InkWell(
                                               onTap: () => launchURL(
-                                                  "tel://${order?.phoneResiver}"),
+                                                  "tel://${order?.phone_resiver}"),
                                               child: Container(
                                                 width: 127,
                                                 height: 32,
                                                 padding: EdgeInsets.symmetric(
                                                     horizontal: 20),
                                                 decoration: BoxDecoration(
-                                                    color: PRIMARY_COLOR,
+                                                    color: widget?.cont?.color,
                                                     borderRadius:
                                                         BorderRadius.circular(
                                                             30)),
@@ -397,7 +392,7 @@ class _PendingState extends State<Pending> {
                                             ),
                                             Container(
                                               child: Text(
-                                                "${order?.adressResiver ?? ""}",
+                                                "${order?.adress_resiver ?? ""}",
                                                 style: TextStyle(
                                                   fontSize: 16,
                                                   fontWeight: FontWeight.bold,
@@ -423,7 +418,7 @@ class _PendingState extends State<Pending> {
                                                 children: [
                                                   Container(
                                                     child: Text(
-                                                      '${order?.totalPrice ?? 0.0}',
+                                                      '${order?.total_price ?? 0.0}',
                                                       style: TextStyle(
                                                         fontSize: 21,
                                                         fontWeight:
@@ -456,7 +451,7 @@ class _PendingState extends State<Pending> {
                                               decoration: BoxDecoration(
                                                   borderRadius:
                                                       BorderRadius.circular(30),
-                                                  color: widget.code?.codeColor),
+                                                  color: widget.cont?.color),
                                               child: Center(
                                                 child: Icon(
                                                   Icons.arrow_forward,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hadaf/data/api_provider.dart';
+import 'package:hadaf/data/node_api_provider.dart';
 import 'package:hadaf/ui/widgets/delivery_button.dart';
 import 'package:hadaf/ui/widgets/delivery_text_field.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -21,6 +22,8 @@ class _AddPinCodeState extends State<AddPinCode> {
   bool _loading = false ;
 
   TextEditingController _code = new TextEditingController();
+  TextEditingController _phone = new TextEditingController();
+  TextEditingController _branch = new TextEditingController();
 
   String errorMsg ="" ;
   @override
@@ -32,7 +35,7 @@ class _AddPinCodeState extends State<AddPinCode> {
       _loading=true;
       errorMsg ="" ;
     });
-    ApiProvider.addCode( code: _code.text ,onError: (error)=>
+    NodeApiProvider.getCode( code: _code.text , phoneNum:_phone.text ,branchId: _branch.text  ,onError: (error)=>
         setState(() {
           _loading = false ;
           errorMsg = error ;
@@ -53,7 +56,6 @@ class _AddPinCodeState extends State<AddPinCode> {
     double height = MediaQuery.of(context).size.height;
     return Material(
       child: Container(
-        height: 190,
         padding: EdgeInsets.symmetric(horizontal: 20),
         child: Column(
           children: [
@@ -68,6 +70,32 @@ class _AddPinCodeState extends State<AddPinCode> {
               backGroundColor: Color(0x33000000),
               textType: TextInputType.number,
               controller: _code,
+
+            ),
+            SizedBox(
+              height: 16,
+            ),
+            DeliveryTextField(
+              label: "phone_num".tr(),
+              hint: "phone_num_ex".tr(),
+              width: width / 1.1,
+              labelColor: Colors.black,
+              backGroundColor: Color(0x33000000),
+              textType: TextInputType.phone,
+              controller: _phone,
+
+            ),
+            SizedBox(
+              height: 16,
+            ),
+            DeliveryTextField(
+              label: "branch_id".tr(),
+              hint: "branch_id_ex".tr(),
+              width: width / 1.1,
+              labelColor: Colors.black,
+              backGroundColor: Color(0x33000000),
+              textType: TextInputType.number,
+              controller: _branch,
 
             ),
             Text("$errorMsg" , style: TextStyle(color: Colors.red , fontSize: 14 , fontWeight: FontWeight.bold) ,),

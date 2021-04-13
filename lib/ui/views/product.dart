@@ -1,10 +1,12 @@
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:hadaf/data/models/counts_model.dart';
 import 'package:hadaf/data/models/status_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hadaf/data/api_provider.dart';
 import 'package:hadaf/data/models/home_codes.dart';
+import 'package:hadaf/data/node_api_provider.dart';
 import 'package:hadaf/ui/views/filter_page.dart';
 import 'package:hadaf/ui/views/pending.dart';
 import 'package:hadaf/ui/widgets/Loading.dart';
@@ -42,7 +44,7 @@ class _ProductState extends State<Product> {
 
   CodeServer code = new CodeServer();
 
-  List<CodeModel> counts = [];
+  List<Count> counts = [];
 
   RefreshController _refreshController =
   RefreshController(initialRefresh: false);
@@ -54,96 +56,95 @@ class _ProductState extends State<Product> {
   void initState() {
     super.initState();
     _getSingleCode();
-    _getStatus();
+    // _getStatus();
   }
 
   _getSingleCode({bool isRefresh = false}) {
     setState(() => _loading = true);
-    ApiProvider.singleCode(
-        pinCode: widget.code?.pin_code,
+    NodeApiProvider.getCodeCounts(
+        accountId: widget.code?.account_code,
         onError: (error) => setState(() => _loading = false),
-        onSuccess: (code) => setState(() {
+        onSuccess: (counts) => setState(() {
           _loading = false;
-          this.code = code;
-          _getStatus();
+          this.counts = counts;
+          // _getStatus();
         }));
     if (isRefresh) _refreshController.refreshCompleted();
   }
 
-  _getStatus() {
-    setState(() => _loading = true);
-    ApiProvider.getStatus(
-        onSuccess: (status) {
-          setState(() {
-            this.status = status;
-            this._loading = false ;
-          });
-          _getList();
-        },
-        onError: () =>setState(()=>_loading = false ));
-  }
-
-  _getList() {
-    counts.clear();
-    setState(() {
-      if (this.code?.countPending != null &&
-          (this.status?.pending ?? 1) == 1)
-        counts.add(CodeModel(
-            code: CodesTypes.PENDING,
-            count: this.code.countPending,
-            name: CodesTypes.getTypeName(CodesTypes.PENDING),
-            codeColor: CodesTypes.getTypeColor(CodesTypes.PENDING),
-            icon: CodesTypes.getTypeIcon(CodesTypes.PENDING)
-        ));
-      if (this.code?.countInProcess != null &&
-          (this.status?.on_progress ?? 1) == 1)
-        counts.add(CodeModel(
-            code: CodesTypes.IN_PROGRESS,
-            count: this.code.countInProcess,
-            name: CodesTypes.getTypeName(CodesTypes.IN_PROGRESS),
-            codeColor: CodesTypes.getTypeColor(CodesTypes.IN_PROGRESS) ,
-            icon: CodesTypes.getTypeIcon(CodesTypes.IN_PROGRESS)
-        ));
-      if (this.code?.countDeleverAll != null &&
-          (this.status?.delivered ?? 1) == 1)
-        counts.add(CodeModel(
-            code: CodesTypes.DELIVERED,
-            count: ((this.code?.countDeleverAll??0)),
-            name: CodesTypes.getTypeName(CodesTypes.DELIVERED),
-            codeColor: CodesTypes.getTypeColor(CodesTypes.DELIVERED),
-            icon: CodesTypes.getTypeIcon(CodesTypes.DELIVERED)
-        ));
-      if (this.code?.countReturenAll != null &&
-          (this.status?.returned ?? 1) == 1)
-        counts.add(CodeModel(
-            code: CodesTypes.RETURNED,
-            count: this.code.countReturenAll,
-            name: CodesTypes.getTypeName(CodesTypes.RETURNED),
-            codeColor: CodesTypes.getTypeColor(CodesTypes.RETURNED),
-            icon: CodesTypes.getTypeIcon(CodesTypes.RETURNED)
-        ));
-      if (this.code?.countReturenClient != null &&
-          (this.status?.returned_client ?? 1) == 1)
-        counts.add(CodeModel(
-            code: CodesTypes.RETURNED_CLIENT,
-            count: this.code.countReturenClient,
-            name: CodesTypes.getTypeName(CodesTypes.RETURNED_CLIENT),
-            codeColor: CodesTypes.getTypeColor(CodesTypes.RETURNED_CLIENT),
-            icon: CodesTypes.getTypeIcon(CodesTypes.RETURNED_CLIENT)
-        ));
-      if (this.code?.countDeleverTasdeed != null &&
-          (this.status?.delivered_paid ?? 1) == 1)
-        counts.add(CodeModel(
-            code: CodesTypes.DELIVERED_PAID,
-            count: this.code.countDeleverTasdeed,
-            name: CodesTypes.getTypeName(CodesTypes.DELIVERED_PAID),
-            codeColor: CodesTypes.getTypeColor(CodesTypes.DELIVERED_PAID),
-            icon: CodesTypes.getTypeIcon(CodesTypes.DELIVERED_PAID)
-        ));
-    });
-
-
-  }
+  // _getStatus() {
+  //   setState(() => _loading = true);
+  //   ApiProvider.getStatus(
+  //       onSuccess: (status) {
+  //         setState(() {
+  //           this.status = status;
+  //           this._loading = false ;
+  //         });
+  //         _getList();
+  //       },
+  //       onError: () =>setState(()=>_loading = false ));
+  // }
+  // _getList() {
+  //   counts.clear();
+  //   setState(() {
+  //     if (this.code?.countPending != null &&
+  //         (this.status?.pending ?? 1) == 1)
+  //       counts.add(CodeModel(
+  //           code: CodesTypes.PENDING,
+  //           count: this.code.countPending,
+  //           name: CodesTypes.getTypeName(CodesTypes.PENDING),
+  //           codeColor: CodesTypes.getTypeColor(CodesTypes.PENDING),
+  //           icon: CodesTypes.getTypeIcon(CodesTypes.PENDING)
+  //       ));
+  //     if (this.code?.countInProcess != null &&
+  //         (this.status?.on_progress ?? 1) == 1)
+  //       counts.add(CodeModel(
+  //           code: CodesTypes.IN_PROGRESS,
+  //           count: this.code.countInProcess,
+  //           name: CodesTypes.getTypeName(CodesTypes.IN_PROGRESS),
+  //           codeColor: CodesTypes.getTypeColor(CodesTypes.IN_PROGRESS) ,
+  //           icon: CodesTypes.getTypeIcon(CodesTypes.IN_PROGRESS)
+  //       ));
+  //     if (this.code?.countDeleverAll != null &&
+  //         (this.status?.delivered ?? 1) == 1)
+  //       counts.add(CodeModel(
+  //           code: CodesTypes.DELIVERED,
+  //           count: ((this.code?.countDeleverAll??0)),
+  //           name: CodesTypes.getTypeName(CodesTypes.DELIVERED),
+  //           codeColor: CodesTypes.getTypeColor(CodesTypes.DELIVERED),
+  //           icon: CodesTypes.getTypeIcon(CodesTypes.DELIVERED)
+  //       ));
+  //     if (this.code?.countReturenAll != null &&
+  //         (this.status?.returned ?? 1) == 1)
+  //       counts.add(CodeModel(
+  //           code: CodesTypes.RETURNED,
+  //           count: this.code.countReturenAll,
+  //           name: CodesTypes.getTypeName(CodesTypes.RETURNED),
+  //           codeColor: CodesTypes.getTypeColor(CodesTypes.RETURNED),
+  //           icon: CodesTypes.getTypeIcon(CodesTypes.RETURNED)
+  //       ));
+  //     if (this.code?.countReturenClient != null &&
+  //         (this.status?.returned_client ?? 1) == 1)
+  //       counts.add(CodeModel(
+  //           code: CodesTypes.RETURNED_CLIENT,
+  //           count: this.code.countReturenClient,
+  //           name: CodesTypes.getTypeName(CodesTypes.RETURNED_CLIENT),
+  //           codeColor: CodesTypes.getTypeColor(CodesTypes.RETURNED_CLIENT),
+  //           icon: CodesTypes.getTypeIcon(CodesTypes.RETURNED_CLIENT)
+  //       ));
+  //     if (this.code?.countDeleverTasdeed != null &&
+  //         (this.status?.delivered_paid ?? 1) == 1)
+  //       counts.add(CodeModel(
+  //           code: CodesTypes.DELIVERED_PAID,
+  //           count: this.code.countDeleverTasdeed,
+  //           name: CodesTypes.getTypeName(CodesTypes.DELIVERED_PAID),
+  //           codeColor: CodesTypes.getTypeColor(CodesTypes.DELIVERED_PAID),
+  //           icon: CodesTypes.getTypeIcon(CodesTypes.DELIVERED_PAID)
+  //       ));
+  //   });
+  //
+  //
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -166,56 +167,56 @@ class _ProductState extends State<Product> {
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  SizedBox(height: 8,),
-                  Container(
-                    color: Colors.white,
-                    padding: EdgeInsets.symmetric(horizontal: 33 ,vertical: 16),
-                    child:Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                          padding : EdgeInsets.symmetric(horizontal: 40),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Image.asset("assets/images/num_orders.png" ,height: 24, width: 24,),
-                              SizedBox(width: 4,),
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text("orders".tr() , style: TextStyle(fontSize: 12), textAlign: TextAlign.start,),
-                                  Text('${code?.countAll ?? 0}'+" "+"order".tr() , style: TextStyle(fontSize: 14 , fontWeight: FontWeight.bold),),
-
-                                ],
-                              )
-                            ],
-                          ),
-                        ),
-                        (this.status?.balance??0) == 0 ? Container():Container(height: 50, width: 1, color: Colors.grey,),
-                        (this.status?.balance??0) == 0?Container(): Container(
-                          padding : EdgeInsets.symmetric(horizontal: 40),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Image.asset("assets/images/balance.png" ,height: 24, width: 24,),
-                              SizedBox(width: 4,),
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text("wallet".tr() , style: TextStyle(fontSize: 12), textAlign: TextAlign.start,),
-                                  Text('${code?.balance ?? 0}  '+"cr".tr() , style: TextStyle(fontSize: 14 , fontWeight: FontWeight.bold),),
-
-                                ],
-                              )
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                  // SizedBox(height: 8,),
+                  // Container(
+                  //   color: Colors.white,
+                  //   padding: EdgeInsets.symmetric(horizontal: 33 ,vertical: 16),
+                  //   child:Row(
+                  //     mainAxisAlignment: MainAxisAlignment.center,
+                  //     crossAxisAlignment: CrossAxisAlignment.center,
+                  //     children: [
+                  //       Container(
+                  //         padding : EdgeInsets.symmetric(horizontal: 40),
+                  //         child: Row(
+                  //           crossAxisAlignment: CrossAxisAlignment.start,
+                  //           children: [
+                  //             Image.asset("assets/images/num_orders.png" ,height: 24, width: 24,),
+                  //             SizedBox(width: 4,),
+                  //             Column(
+                  //               mainAxisAlignment: MainAxisAlignment.start,
+                  //               crossAxisAlignment: CrossAxisAlignment.start,
+                  //               children: [
+                  //                 Text("orders".tr() , style: TextStyle(fontSize: 12), textAlign: TextAlign.start,),
+                  //                 Text('${code?.countAll ?? 0}'+" "+"order".tr() , style: TextStyle(fontSize: 14 , fontWeight: FontWeight.bold),),
+                  //
+                  //               ],
+                  //             )
+                  //           ],
+                  //         ),
+                  //       ),
+                  //       (this.status?.balance??0) == 0 ? Container():Container(height: 50, width: 1, color: Colors.grey,),
+                  //       (this.status?.balance??0) == 0?Container(): Container(
+                  //         padding : EdgeInsets.symmetric(horizontal: 40),
+                  //         child: Row(
+                  //           crossAxisAlignment: CrossAxisAlignment.start,
+                  //           children: [
+                  //             Image.asset("assets/images/balance.png" ,height: 24, width: 24,),
+                  //             SizedBox(width: 4,),
+                  //             Column(
+                  //               mainAxisAlignment: MainAxisAlignment.start,
+                  //               crossAxisAlignment: CrossAxisAlignment.start,
+                  //               children: [
+                  //                 Text("wallet".tr() , style: TextStyle(fontSize: 12), textAlign: TextAlign.start,),
+                  //                 Text('${code?.balance ?? 0}  '+"cr".tr() , style: TextStyle(fontSize: 14 , fontWeight: FontWeight.bold),),
+                  //
+                  //               ],
+                  //             )
+                  //           ],
+                  //         ),
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
                   SizedBox(height: 8,),
                   ListView.builder(
                     shrinkWrap: true,
@@ -223,13 +224,15 @@ class _ProductState extends State<Product> {
                     padding: EdgeInsets.symmetric(horizontal: 15),
                     itemCount: this.counts?.length ?? 0,
                     itemBuilder: (context, index) {
-                      CodeModel count = counts[index];
+                      Count count = counts[index];
                       return InkWell(
                         onTap: () =>
                             Navigator.of(context).push(MaterialPageRoute(
                                 builder: (context) => Pending(
-                                  code: count,
-                                  accountNum: this.code?.accountCode,
+                                    accountId: widget.code?.account_code,
+                                    status: count?.status,
+                                  name: widget.code?.account_name,
+                                  cont: count,
                                 ))),
                         child: Container(
                           width: width,
@@ -257,11 +260,11 @@ class _ProductState extends State<Product> {
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                              "${count?.name ?? ""}",
+                                              "${count?.status_name ?? ""}",
                                               style: TextStyle(
                                                 fontSize: 16,
                                                 fontWeight: FontWeight.bold,
-                                                color: count?.codeColor ??
+                                                color: count?.color ??
                                                     Colors.black,
                                               ),
                                             ),
@@ -321,7 +324,7 @@ class _ProductState extends State<Product> {
                                         height: 32,
                                         decoration: BoxDecoration(
                                           borderRadius: BorderRadius.circular(30),
-                                          color: count?.codeColor
+                                          color: count?.color
                                         ),
                                         child: Center(
                                           child: Icon(Icons.arrow_forward , color: Colors.white, size: 20,),

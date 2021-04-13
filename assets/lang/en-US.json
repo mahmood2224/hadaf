@@ -68,4 +68,9 @@
 "order":"order",
 "cr":"cr",
 "call_reciver":"call reciver",
-"call_driver":"call driver"}
+"call_driver":"call driver",
+"phone_num":"phone num",
+"phone_num_ex":"phone num ex",
+"branch_id":"branch id",
+"branch_id_ex":"branch id ex",
+"flutter_by_zosne":"flutter by zosne"}
