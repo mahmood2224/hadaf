@@ -73,4 +73,11 @@
 "phone_num_ex":"phone num ex",
 "branch_id":"branch id",
 "branch_id_ex":"branch id ex",
-"flutter_by_zosne":"flutter by zosne"}
+"flutter_by_zosne":"flutter by zosne",
+"connect_with_client":"connect with client",
+"connect_with_receiver":"connect with receiver",
+"partial_returned":"partial returned",
+"edit_price":"edit price",
+"add_note":"add note",
+"note":"note",
+"price":"price"}

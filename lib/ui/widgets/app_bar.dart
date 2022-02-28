@@ -5,8 +5,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:hadaf/ui/widgets/Logo.dart';
-import 'package:hadaf/utils/colors.dart';
+import '/ui/widgets/Logo.dart';
+import '/utils/colors.dart';
 
 PreferredSize HadafAppBar(BuildContext context,
     {String title = "",Widget titleWidget, GlobalKey<ScaffoldState> scaffoldKey , List<Widget> actions , Widget leading}) {

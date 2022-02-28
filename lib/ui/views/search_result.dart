@@ -25,21 +25,19 @@ import '/utils/colors.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-class Pending extends StatefulWidget {
+class SearchResult extends StatefulWidget {
   String accountId;
-  int status;
-  String name;
   int type;
-  Count cont;
-  Pending(this.type, {this.status, this.accountId, this.name, this.cont});
+  FilterResult filter;
+  SearchResult(this.type, {this.filter, this.accountId});
 
   @override
-  _PendingState createState() {
-    return _PendingState();
+  _SearchResultState createState() {
+    return _SearchResultState();
   }
 }
 
-class _PendingState extends State<Pending> {
+class _SearchResultState extends State<SearchResult> {
   GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   bool _loading = false;
@@ -52,38 +50,27 @@ class _PendingState extends State<Pending> {
 
   int balance = 0;
   int shippingBalance = 0;
-  int salaries = 0;
-  int net = 0;
   @override
   void initState() {
     super.initState();
     _getOrders();
-    print("***************************${widget.type}");
   }
 
-  _getOrders(
-      {bool isRefresh = false, String phoneNum, int zoneId, String billNum}) {
+  _getOrders({bool isRefresh = false}) {
     setState(() => _loading = true);
     NodeApiProvider.getOrders(widget.type,
         accountId: widget.accountId,
-        status: widget.status,
-        billNum: billNum,
-        phoneNum: (phoneNum?.isEmpty ?? true) ? null : phoneNum,
-        zoneId: zoneId,
+        phoneNum: (widget.filter.type == FilterTypes.BY_PHONE)
+            ? widget.filter.value
+            : null,
+        zoneId: widget.filter.zone?.zoon_id,
+        billNum: widget.filter.type == FilterTypes.BY_ID
+            ? widget.filter?.value
+            : null,
         onError: (error) => setState(() => _loading = false),
         onSuccess: (orders) => setState(() {
-              this.balance = 0;
-              this.shippingBalance = 0;
-              this.net = 0;
-              this.salaries = 0;
               _loading = false;
               this.orders = orders;
-              this.orders.forEach((element) => setState(() {
-                    this.balance += element?.total_price ?? 0;
-                    this.shippingBalance += element?.total_cost_shipping ?? 0;
-                    this.salaries += element?.price_shipping ?? 0;
-                    this.net += element?.total_Price_client ?? 0;
-                  }));
             }));
     if (isRefresh) _refreshController.refreshCompleted();
   }
@@ -194,7 +181,7 @@ class _PendingState extends State<Pending> {
                   ),
                 ),
                 InkWell(
-                  onTap: () => _inputDialog(order?.id, ORDER_PARTIAL_RETURNED),
+                  onTap: () => _dialog(order?.id, ORDER_PARTIAL_RETURNED),
                   child: Container(
                     height: 45,
                     padding: EdgeInsets.symmetric(horizontal: 16),
@@ -229,7 +216,7 @@ class _PendingState extends State<Pending> {
                   ),
                 ),
                 InkWell(
-                  onTap: () => _inputDialog(order?.id, ORDER_EDIT_PRICE),
+                  onTap: () => _dialog(order?.id, ORDER_EDIT_PRICE),
                   child: Container(
                     height: 45,
                     padding: EdgeInsets.symmetric(horizontal: 16),
@@ -264,7 +251,7 @@ class _PendingState extends State<Pending> {
                   ),
                 ),
                 InkWell(
-                  onTap: () => _inputDialog(order?.id, ORDER_SEND_NOTE),
+                  onTap: () => _dialog(order?.id, ORDER_SEND_NOTE),
                   child: Container(
                     height: 45,
                     padding: EdgeInsets.symmetric(horizontal: 16),
@@ -299,225 +286,19 @@ class _PendingState extends State<Pending> {
         });
   }
 
-  _showDataModel() {
-    double width = MediaQuery.of(context).size.width;
-    ShowDialog(
-        context: context,
-        height: 260,
-        radius: BorderRadius.circular(16),
-        child: Column(
-          children: [
-            SizedBox(
-              height: 16,
-            ),
-            Text(
-              "الاحصائيات",
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(
-              height: 16,
-            ),
-            Container(
-              color: Colors.white,
-              padding: EdgeInsets.symmetric(horizontal: 33, vertical: 16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Spacer(),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 16),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Image.asset(
-                          "assets/images/num_order.png",
-                          height: 24,
-                          width: 24,
-                        ),
-                        SizedBox(
-                          width: 4,
-                        ),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "  اجمالي الطلبات  ",
-                              style: TextStyle(fontSize: 12),
-                              textAlign: TextAlign.start,
-                            ),
-                            Text(
-                              '${this.orders?.length ?? 0}' +
-                                  " " +
-                                  "order".tr(),
-                              style: TextStyle(
-                                  fontSize: 14, fontWeight: FontWeight.bold),
-                            ),
-                          ],
-                        )
-                      ],
-                    ),
-                  ),
-                  Spacer(),
-                  Container(
-                    height: 50,
-                    width: 1,
-                    color: Colors.grey,
-                  ),
-                  Spacer(),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 16),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Image.asset(
-                          "assets/images/balance.png",
-                          height: 24,
-                          width: 24,
-                        ),
-                        SizedBox(
-                          width: 4,
-                        ),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "wallet".tr(),
-                              style: TextStyle(fontSize: 12),
-                              textAlign: TextAlign.start,
-                            ),
-                            Text(
-                              convertNumbersString('${this.balance ?? 0}') +
-                                  " " +
-                                  "cr".tr(),
-                              style: TextStyle(
-                                  fontSize: 14, fontWeight: FontWeight.bold),
-                            ),
-                          ],
-                        )
-                      ],
-                    ),
-                  ),
-                  Spacer()
-                ],
-              ),
-            ),
-            SizedBox(
-              height: 8,
-            ),
-            Container(
-              color: Colors.white,
-              padding: EdgeInsets.symmetric(horizontal: 33, vertical: 16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Spacer(),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 16),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Image.asset(
-                          "assets/images/num_order.png",
-                          height: 24,
-                          width: 24,
-                        ),
-                        SizedBox(
-                          width: 4,
-                        ),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "اجمالي اجور التوصيل",
-                              style: TextStyle(fontSize: 12),
-                              textAlign: TextAlign.start,
-                            ),
-                            Text(
-                              convertNumbersString(
-                                      '${this.shippingBalance ?? 0}') +
-                                  " " +
-                                  "cr".tr(),
-                              style: TextStyle(
-                                  fontSize: 14, fontWeight: FontWeight.bold),
-                            ),
-                          ],
-                        )
-                      ],
-                    ),
-                  ),
-                  Spacer(),
-                  Container(
-                    height: 50,
-                    width: 1,
-                    color: Colors.grey,
-                  ),
-                  Spacer(),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 16),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Image.asset(
-                          "assets/images/balance.png",
-                          height: 24,
-                          width: 24,
-                        ),
-                        SizedBox(
-                          width: 4,
-                        ),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "صافي المطلوب",
-                              style: TextStyle(fontSize: 12),
-                              textAlign: TextAlign.start,
-                            ),
-                            Text(
-                              convertNumbersString(
-                                      '${(this.balance ?? 0) - (this.shippingBalance ?? 0)}') +
-                                  " " +
-                                  "cr".tr(),
-                              style: TextStyle(
-                                  fontSize: 14, fontWeight: FontWeight.bold),
-                            ),
-                          ],
-                        )
-                      ],
-                    ),
-                  ),
-                  Spacer()
-                ],
-              ),
-            ),
-          ],
-        ));
-  }
-
   _changeOrderStatus(int orderId, int type, {String note, String price}) {
-    _loadingDialog();
     NodeApiProvider.changeOrderStatus(
         DriverOrderChangingSend(
             type: type,
             orderId: orderId,
             price: price,
-            clientType: widget.type,
             note: note), onSuccess: (message) {
-      Navigator.of(context).pop();
-      Navigator.of(context).pop();
       showInSnackBar(
           value: message,
           scaffoldKey: _scaffoldKey,
           messageType: MessageType.SUCCESS);
       this._getOrders();
     }, onError: (error) {
-      Navigator.pop(context);
       showInSnackBar(
           value: error,
           scaffoldKey: _scaffoldKey,
@@ -525,14 +306,13 @@ class _PendingState extends State<Pending> {
     });
   }
 
-  _inputDialog(int orderId, int type) {
+  _dialog(int orderId, int type) {
     double width = MediaQuery.of(context).size.width;
     ShowDialog(
         context: context,
         height: type == ORDER_SEND_NOTE ? 260 : 180,
         radius: BorderRadius.circular(16),
         child: Container(
-          color: Colors.white,
           padding: EdgeInsets.all(16),
           child: Column(
             children: [
@@ -573,23 +353,6 @@ class _PendingState extends State<Pending> {
         alignment: Alignment.center);
   }
 
-  _loadingDialog() {
-    double width = MediaQuery.of(context).size.width;
-    ShowDialog(
-        context: context,
-        height: 100,
-        dismiss: false,
-        radius: BorderRadius.circular(16),
-        child: Container(
-          color: Colors.white,
-            child: Center(
-          child: Text(
-            "من فضلك انتظر جاري التحميل ...",
-            style: TextStyle(fontSize: 14),
-          ),
-        )));
-  }
-
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -597,29 +360,7 @@ class _PendingState extends State<Pending> {
 
     return Scaffold(
       key: _scaffoldKey,
-      appBar:
-          HadafAppBar(context, title: "${widget.name ?? "البحث"}", actions: [
-        IconButton(
-            icon: Icon(
-              FontAwesomeIcons.filter,
-              size: 20,
-            ),
-            onPressed: () => {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => FilterPage((FilterResult result) {
-                            String phone = result.type == FilterTypes.BY_PHONE
-                                ? result?.value
-                                : null;
-                            String billNum = result.type == FilterTypes.BY_ID
-                                ? result?.value
-                                : null;
-                            _getOrders(
-                                phoneNum: phone,
-                                zoneId: result?.zone?.zoon_id,
-                                billNum: billNum);
-                          })))
-                })
-      ]),
+      appBar: HadafAppBar(context, title: "البحث"),
       body: Container(
         height: height,
         decoration: BoxDecoration(
@@ -643,229 +384,6 @@ class _PendingState extends State<Pending> {
                             SizedBox(
                               height: 8,
                             ),
-                            InkWell(
-                              onTap: widget.type == DRIVER
-                                  ? _showDataModel
-                                  : () {},
-                              child: Container(
-                                color: Colors.white,
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 33, vertical: 16),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Spacer(),
-                                    Container(
-                                      padding:
-                                          EdgeInsets.symmetric(horizontal: 16),
-                                      child: Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Image.asset(
-                                            "assets/images/num_order.png",
-                                            height: 24,
-                                            width: 24,
-                                          ),
-                                          SizedBox(
-                                            width: 4,
-                                          ),
-                                          Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                "orders".tr(),
-                                                style: TextStyle(fontSize: 12),
-                                                textAlign: TextAlign.start,
-                                              ),
-                                              Text(
-                                                '${this.orders?.length ?? 0}' +
-                                                    " " +
-                                                    "order".tr(),
-                                                style: TextStyle(
-                                                    fontSize: 14,
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
-                                            ],
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                    Spacer(),
-                                    Container(
-                                      height: 50,
-                                      width: 1,
-                                      color: Colors.grey,
-                                    ),
-                                    Spacer(),
-                                    Container(
-                                      padding:
-                                          EdgeInsets.symmetric(horizontal: 16),
-                                      child: Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Image.asset(
-                                            "assets/images/balance.png",
-                                            height: 24,
-                                            width: 24,
-                                          ),
-                                          SizedBox(
-                                            width: 4,
-                                          ),
-                                          Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                "wallet".tr(),
-                                                style: TextStyle(fontSize: 12),
-                                                textAlign: TextAlign.start,
-                                              ),
-                                              Text(
-                                                convertNumbersString(
-                                                        '${this.balance ?? 0}') +
-                                                    " " +
-                                                    "cr".tr(),
-                                                style: TextStyle(
-                                                    fontSize: 14,
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
-                                            ],
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                    Spacer()
-                                  ],
-                                ),
-                              ),
-                            ),
-                            widget.type == CLIENT
-                                ? InkWell(
-                                    onTap: widget.type == DRIVER
-                                        ? _showDataModel
-                                        : () {},
-                                    child: Container(
-                                      color: Colors.white,
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: 33, vertical: 16),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          Spacer(),
-                                          Container(
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: 16),
-                                            child: Row(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Image.asset(
-                                                  "assets/images/num_order.png",
-                                                  height: 24,
-                                                  width: 24,
-                                                ),
-                                                SizedBox(
-                                                  width: 4,
-                                                ),
-                                                Column(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.start,
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      "صافي",
-                                                      style: TextStyle(
-                                                          fontSize: 12),
-                                                      textAlign:
-                                                          TextAlign.start,
-                                                    ),
-                                                    Text(
-                                                      '${this.net ?? 0}' +
-                                                          " " +
-                                                          "cr".tr(),
-                                                      style: TextStyle(
-                                                          fontSize: 14,
-                                                          fontWeight:
-                                                              FontWeight.bold),
-                                                    ),
-                                                  ],
-                                                )
-                                              ],
-                                            ),
-                                          ),
-                                          Spacer(),
-                                          Container(
-                                            height: 50,
-                                            width: 1,
-                                            color: Colors.grey,
-                                          ),
-                                          Spacer(),
-                                          Container(
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: 16),
-                                            child: Row(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Image.asset(
-                                                  "assets/images/balance.png",
-                                                  height: 24,
-                                                  width: 24,
-                                                ),
-                                                SizedBox(
-                                                  width: 4,
-                                                ),
-                                                Column(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.start,
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      "الاجور",
-                                                      style: TextStyle(
-                                                          fontSize: 12),
-                                                      textAlign:
-                                                          TextAlign.start,
-                                                    ),
-                                                    Text(
-                                                      convertNumbersString(
-                                                              '${this.salaries ?? 0}') +
-                                                          " " +
-                                                          "cr".tr(),
-                                                      style: TextStyle(
-                                                          fontSize: 14,
-                                                          fontWeight:
-                                                              FontWeight.bold),
-                                                    ),
-                                                  ],
-                                                )
-                                              ],
-                                            ),
-                                          ),
-                                          Spacer()
-                                        ],
-                                      ),
-                                    ),
-                                  )
-                                : Container(),
-                            SizedBox(
-                              height: 8,
-                            ),
                             ListView.builder(
                               shrinkWrap: true,
                               physics: NeverScrollableScrollPhysics(),
@@ -873,12 +391,20 @@ class _PendingState extends State<Pending> {
                               itemCount: this.orders?.length ?? 0,
                               itemBuilder: (context, index) {
                                 NodeOrder order = this.orders[index];
-
+                                int status = widget.type == DRIVER
+                                    ? order?.New_State_Driver
+                                    : order?.state_deleiver_id;
+                                Count cont = new Count(
+                                    status: status,
+                                    color: CodesTypes.getTypeColor(status),
+                                    icon: CodesTypes.getTypeIcon(status),
+                                    status_name:
+                                        CodesTypes.getTypeName(status));
                                 return InkWell(
                                   onTap: () => Navigator.of(context).push(
                                       MaterialPageRoute(
-                                          builder: (context) => ProductDetails(
-                                              order, widget.cont , type: widget.type,))),
+                                          builder: (context) =>
+                                              ProductDetails(order, cont))),
                                   child: Container(
                                     width: width,
                                     padding: EdgeInsets.symmetric(
@@ -1100,6 +626,49 @@ class _PendingState extends State<Pending> {
                                           width: width,
                                           color: Color(0x26000000),
                                         ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Container(
+                                              child: Row(
+                                                children: [
+                                                  Container(
+                                                    child: Text(
+                                                      "الحالة",
+                                                      style: TextStyle(
+                                                        fontSize: 12,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color:
+                                                            Color(0x4D232446),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            Container(
+                                              child: Text(
+                                                CodesTypes.getTypeName(status),
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold,
+                                                  color:
+                                                      CodesTypes.getTypeColor(
+                                                          status),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        Container(
+                                          margin:
+                                              EdgeInsets.symmetric(vertical: 5),
+                                          height: 1,
+                                          width: width,
+                                          color: Color(0x26000000),
+                                        ),
                                         widget.type == DRIVER
                                             ? Container()
                                             : Row(
@@ -1152,14 +721,14 @@ class _PendingState extends State<Pending> {
                                                 color: Color(0x26000000),
                                               ),
                                         ((widget.type ?? CLIENT) == DRIVER &&
-                                                (widget.cont?.status) !=
+                                                (cont?.status) !=
                                                     CodesTypes.DRIVER_PAID)
                                             ? Row(
                                                 mainAxisAlignment:
                                                     MainAxisAlignment
                                                         .spaceBetween,
                                                 children: [
-                                                  (widget?.cont?.status ==
+                                                  (cont?.status ==
                                                           CodesTypes.DELIVERED)
                                                       ? Container()
                                                       : Padding(
@@ -1187,7 +756,7 @@ class _PendingState extends State<Pending> {
                                                             },
                                                           ),
                                                         ),
-                                                  (widget?.cont?.status ==
+                                                  (cont?.status ==
                                                           CodesTypes.RETURNED)
                                                       ? Container()
                                                       : DeliveryButton(
@@ -1197,11 +766,11 @@ class _PendingState extends State<Pending> {
                                                                       45) /
                                                                   2 -
                                                               16,
-                                                          background: widget
-                                                              .cont?.color
+                                                          background: cont
+                                                              ?.color
                                                               ?.withOpacity(.3),
-                                                          textColor: widget
-                                                              ?.cont?.color,
+                                                          textColor:
+                                                              cont?.color,
                                                           height: 45,
                                                           text: "returned".tr(),
                                                           onPressed: () {
@@ -1247,8 +816,7 @@ class _PendingState extends State<Pending> {
                                                         borderRadius:
                                                             BorderRadius
                                                                 .circular(30),
-                                                        color:
-                                                            widget.cont?.color),
+                                                        color: cont?.color),
                                                     child: Center(
                                                       child: Icon(
                                                         Icons.arrow_forward,

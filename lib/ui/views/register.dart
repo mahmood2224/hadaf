@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:hadaf/data/api_provider.dart';
-import 'package:hadaf/data/models/auth_send_model.dart';
-import 'package:hadaf/ui/views/home.dart';
-import 'package:hadaf/ui/widgets/delivery_button.dart';
-import 'package:hadaf/ui/widgets/delivery_text_field.dart';
-import 'package:hadaf/ui/widgets/logo.dart';
-import 'package:hadaf/utils/colors.dart';
+import '/data/api_provider.dart';
+import '/data/models/auth_send_model.dart';
+import '/ui/views/home.dart';
+import '/ui/widgets/delivery_button.dart';
+import '/ui/widgets/delivery_text_field.dart';
+import '/ui/widgets/logo.dart';
+import '/utils/colors.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 class Register extends StatefulWidget {

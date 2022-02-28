@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:hadaf/ui/widgets/Loading.dart';
-import 'package:hadaf/utils/colors.dart';
+import '/ui/widgets/Loading.dart';
+import '/utils/colors.dart';
 
 class DeliveryButton extends StatelessWidget {
   String text ;

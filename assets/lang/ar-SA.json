@@ -73,4 +73,11 @@
 "phone_num_ex":"من فضلك ادخل رقم الهاتف",
 "branch_id":"الرقم التعريفي للفرع",
 "branch_id_ex":"مثال : 1",
-"flutter_by_zosne":"flutter by zosne"}
+"flutter_by_zosne":"البحث بواسطة المنطقة",
+"connect_with_client":"تواصل مع العميل",
+"connect_with_receiver":"تواصل مع المستلم",
+"partial_returned":"راجع جزئي",
+"edit_price":"تعديل السعر",
+"add_note":"اضافة ملاحظة",
+"note":"الملاحظات",
+"price":"السعر"}

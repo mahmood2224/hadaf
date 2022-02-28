@@ -74,6 +74,7 @@ class NodeOrder {
     bool show;
     String state_Cleint;
     int state_deleiver_id;
+    int New_State_Driver;
     String state_deliver_name;
     String state_driver;
     String state_name;
@@ -101,7 +102,7 @@ class NodeOrder {
     int zoon_id;
     String zoon_name;
 
-    NodeOrder({this.account_id, this.account_name, this.account_phone, this.account_pincode, this.active_del, this.additional_cost_shipping, this.additional_price_goods, this.additional_price_shipping, this.adress_another, this.adress_resiver, this.adress_sender, this.bill_Sanad_D, this.bill_Sanad_T, this.bill_nr, this.box_Driver, this.box_client, this.branch_id, this.branch_name, this.check_Driver, this.check_doubel, this.check_good, this.check_late, this.check_price, this.company_code, this.cost_shipping, this.date, this.date_process, this.delever_Client, this.delever_Driver, this.goods_New, this.iS_SEND, this.id, this.lantidue, this.lantuide, this.note_Back, this.phone_resiver, this.price_New, this.price_goods, this.price_shipping, this.province_name, this.provinice_id, this.qTY, this.resiver_name, this.row, this.sender_name, this.shiping_Nr, this.show, this.state_Cleint, this.state_deleiver_id, this.state_deliver_name, this.state_driver, this.state_name, this.state_payment_id, this.state_print, this.time_process, this.total_Price_client, this.total_cost, this.total_cost_shipping, this.total_driver, this.total_price, this.total_price_shipping, this.total_prophet, this.type_goods, this.type_goods_name, this.user_name, this.view_historey, this.view_state_id, this.view_state_name, this.weight, this.with_id, this.with_name, this.with_phone, this.with_pincode, this.zoon_id, this.zoon_name});
+    NodeOrder({this.account_id, this.New_State_Driver, this.account_name, this.account_phone, this.account_pincode, this.active_del, this.additional_cost_shipping, this.additional_price_goods, this.additional_price_shipping, this.adress_another, this.adress_resiver, this.adress_sender, this.bill_Sanad_D, this.bill_Sanad_T, this.bill_nr, this.box_Driver, this.box_client, this.branch_id, this.branch_name, this.check_Driver, this.check_doubel, this.check_good, this.check_late, this.check_price, this.company_code, this.cost_shipping, this.date, this.date_process, this.delever_Client, this.delever_Driver, this.goods_New, this.iS_SEND, this.id, this.lantidue, this.lantuide, this.note_Back, this.phone_resiver, this.price_New, this.price_goods, this.price_shipping, this.province_name, this.provinice_id, this.qTY, this.resiver_name, this.row, this.sender_name, this.shiping_Nr, this.show, this.state_Cleint, this.state_deleiver_id, this.state_deliver_name, this.state_driver, this.state_name, this.state_payment_id, this.state_print, this.time_process, this.total_Price_client, this.total_cost, this.total_cost_shipping, this.total_driver, this.total_price, this.total_price_shipping, this.total_prophet, this.type_goods, this.type_goods_name, this.user_name, this.view_historey, this.view_state_id, this.view_state_name, this.weight, this.with_id, this.with_name, this.with_phone, this.with_pincode, this.zoon_id, this.zoon_name});
 
     factory NodeOrder.fromJson(Map<String, dynamic> json) {
         return NodeOrder(
@@ -153,8 +154,9 @@ class NodeOrder {
             shiping_Nr: json['shiping_Nr'], 
             show: json['show'], 
             state_Cleint: json['state_Cleint'], 
-            state_deleiver_id: json['state_deleiver_id'], 
-            state_deliver_name: json['state_deliver_name'], 
+            state_deleiver_id: json['state_deleiver_id'],
+            New_State_Driver: json['New_State_Driver'],
+            state_deliver_name: json['state_deliver_name'],
             state_driver: json['state_driver'], 
             state_name: json['state_name'], 
             state_payment_id: json['state_payment_id'], 

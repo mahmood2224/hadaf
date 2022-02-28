@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:hadaf/data/models/auth_model.dart';
-import 'package:hadaf/ui/views/login.dart';
+import '/data/models/auth_model.dart';
+import '/ui/views/login.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 Future<bool> setUserData({@required AuthModel data})async{

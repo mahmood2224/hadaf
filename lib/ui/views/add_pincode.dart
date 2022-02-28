@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:hadaf/data/api_provider.dart';
-import 'package:hadaf/data/node_api_provider.dart';
-import 'package:hadaf/ui/widgets/delivery_button.dart';
-import 'package:hadaf/ui/widgets/delivery_text_field.dart';
+import 'package:flutter_styled_toast/flutter_styled_toast.dart';
+import '/data/api_provider.dart';
+import '/data/node_api_provider.dart';
+import '/ui/widgets/delivery_button.dart';
+import '/ui/widgets/delivery_text_field.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 class AddPinCode extends StatefulWidget {
-
-  Function onSuccess ;
+  Function onSuccess;
 
   AddPinCode({this.onSuccess});
 
@@ -18,37 +18,40 @@ class AddPinCode extends StatefulWidget {
 }
 
 class _AddPinCodeState extends State<AddPinCode> {
-
-  bool _loading = false ;
+  bool _loading = false;
 
   TextEditingController _code = new TextEditingController();
   TextEditingController _phone = new TextEditingController();
-  TextEditingController _branch = new TextEditingController();
+  // TextEditingController _branch = new TextEditingController();
 
-  String errorMsg ="" ;
+  String errorMsg = "";
   @override
   void initState() {
     super.initState();
   }
-  _addCode(){
-    setState((){
-      _loading=true;
-      errorMsg ="" ;
+
+  _addCode() {
+    setState(() {
+      _loading = true;
+      errorMsg = "";
     });
-    NodeApiProvider.getCode( code: _code.text , phoneNum:_phone.text ,branchId: _branch.text  ,onError: (error)=>
-        setState(() {
-          _loading = false ;
-          errorMsg = error ;
-        }),
-        onSuccess: (){
-          setState(() =>_loading = false );
-          widget.onSuccess() ;
+    NodeApiProvider.getCode(
+        code: _code.text,
+        phoneNum: _phone.text,
+        branchId: "1",
+        onError: (error) {
+          showToast(error ,backgroundColor: Colors.red);
+          setState(() {
+            _loading = false;
+            errorMsg = error;
+          });
+        },
+        onSuccess: () {
+          setState(() => _loading = false);
+          widget.onSuccess();
           Navigator.pop(context);
-        }
-
-    );
+        });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -62,15 +65,21 @@ class _AddPinCodeState extends State<AddPinCode> {
             SizedBox(
               height: 16,
             ),
+            Text(
+              "اضف كود جديد",
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            ),
+            SizedBox(
+              height: 8,
+            ),
             DeliveryTextField(
               label: "pin_code".tr(),
               hint: "pin_code_ex".tr(),
               width: width / 1.1,
               labelColor: Colors.black,
               backGroundColor: Color(0x33000000),
-              textType: TextInputType.number,
+              textType: TextInputType.phone,
               controller: _code,
-
             ),
             SizedBox(
               height: 16,
@@ -83,22 +92,25 @@ class _AddPinCodeState extends State<AddPinCode> {
               backGroundColor: Color(0x33000000),
               textType: TextInputType.phone,
               controller: _phone,
-
             ),
-            SizedBox(
-              height: 16,
+            // SizedBox(
+            //   height: 16,
+            // ),
+            // DeliveryTextField(
+            //   label: "branch_id".tr(),
+            //   hint: "branch_id_ex".tr(),
+            //   width: width / 1.1,
+            //   labelColor: Colors.black,
+            //   backGroundColor: Color(0x33000000),
+            //   textType: TextInputType.number,
+            //   controller: _branch,
+            //
+            // ),
+            Text(
+              "$errorMsg",
+              style: TextStyle(
+                  color: Colors.red, fontSize: 14, fontWeight: FontWeight.bold),
             ),
-            DeliveryTextField(
-              label: "branch_id".tr(),
-              hint: "branch_id_ex".tr(),
-              width: width / 1.1,
-              labelColor: Colors.black,
-              backGroundColor: Color(0x33000000),
-              textType: TextInputType.number,
-              controller: _branch,
-
-            ),
-            Text("$errorMsg" , style: TextStyle(color: Colors.red , fontSize: 14 , fontWeight: FontWeight.bold) ,),
             SizedBox(
               height: 8,
             ),

@@ -1,18 +1,21 @@
+import 'dart:io';
+
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:hadaf/data/api_provider.dart';
-import 'package:hadaf/data/models/home_codes.dart';
-import 'package:hadaf/data/userData.dart';
-import 'package:hadaf/ui/views/add_pincode.dart';
-import 'package:hadaf/ui/views/notification.dart';
-import 'package:hadaf/ui/views/product.dart';
-import 'package:hadaf/ui/widgets/Loading.dart';
-import 'package:hadaf/ui/widgets/app_bar.dart';
-import 'package:hadaf/ui/widgets/logo.dart';
-import 'package:hadaf/utils/Dialog.dart';
-import 'package:hadaf/utils/colors.dart';
+import '/data/api_provider.dart';
+import '/data/models/home_codes.dart';
+import '/data/userData.dart';
+import '/ui/views/add_pincode.dart';
+import '/ui/views/notification.dart';
+import '/ui/views/product.dart';
+import '/ui/widgets/Loading.dart';
+import '/ui/widgets/app_bar.dart';
+import '/ui/widgets/logo.dart';
+import '/utils/Dialog.dart';
+import '/utils/colors.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -30,12 +33,17 @@ class _HomeState extends State<Home> {
 
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
+  FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance ;
 
   bool _loading = false;
   @override
   void initState() {
     super.initState();
     _getCodes();
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      showNotificationDialog(context, title: message?.notification?.title, desc: message?.notification?.body);
+    });
   }
 
   _getCodes({bool isRefresh = false}) {
@@ -77,7 +85,7 @@ class _HomeState extends State<Home> {
           InkWell(
               onTap: () => ShowDialog(
                   context: context,
-                  height: 380,
+                  height: 350,
                   radius: BorderRadius.circular(16),
                   child: AddPinCode(
                     onSuccess: _getCodes,

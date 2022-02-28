@@ -1,22 +1,28 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:hadaf/data/models/counts_model.dart';
-import 'package:hadaf/data/models/home_codes.dart';
-import 'package:hadaf/data/models/node_order_response.dart';
-import 'package:hadaf/data/models/order_model.dart';
-import 'package:hadaf/ui/views/product.dart';
-import 'package:hadaf/ui/widgets/app_bar.dart';
-import 'package:hadaf/ui/widgets/delivery_button.dart';
-import 'package:hadaf/ui/widgets/logo.dart';
-import 'package:hadaf/utils/Config.dart';
-import 'package:hadaf/utils/colors.dart';
+import '/data/models/counts_model.dart';
+import '/data/models/home_codes.dart';
+import '/data/models/node_order_notes_respones.dart';
+import '/data/models/node_order_response.dart';
+import '/data/models/order_model.dart';
+import '/data/node_api_provider.dart';
+import '/ui/views/product.dart';
+import '/ui/widgets/app_bar.dart';
+import '/ui/widgets/delivery_button.dart';
+import '/ui/widgets/logo.dart';
+import '/ui/widgets/notes_dialog.dart';
+import '/utils/Config.dart';
+import '/utils/Dialog.dart';
+import '/utils/algorithms.dart';
+import '/utils/colors.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 class ProductDetails extends StatefulWidget {
   NodeOrder order;
   Count code;
+  int type ;
 
-  ProductDetails(this.order, this.code);
+  ProductDetails(this.order, this.code , {this.type});
 
   @override
   _ProductDetailsState createState() {
@@ -31,6 +37,8 @@ class _ProductDetailsState extends State<ProductDetails> {
   void initState() {
     super.initState();
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -77,6 +85,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                     children: [
                       Container(
                         child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -111,6 +120,21 @@ class _ProductDetailsState extends State<ProductDetails> {
                                 ),
                               ],
                             ),
+                            DeliveryButton(
+                              background: Colors.black26,
+                              width: 127,
+                              height: 37,
+                              text: "الملاحظات",
+                              textColor: Colors.black45,
+                              onPressed: (){
+                                ShowDialog(
+                                  context: context ,
+                                  height: height-80,
+                                  radius: BorderRadius.circular(20),
+                                  child: NotesDialog(widget.order?.id , widget.type)
+                                );
+                              },
+                            )
                           ],
                         ),
                       ),
@@ -164,7 +188,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              "city".tr() + " : ",
+                              "area".tr() + " : ",
                               style: TextStyle(
                                   fontSize: 14,
                                   color: Colors.grey,
@@ -196,14 +220,14 @@ class _ProductDetailsState extends State<ProductDetails> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              "area".tr() + " : ",
+                              "Address".tr() + " : ",
                               style: TextStyle(
                                   fontSize: 14,
                                   color: Colors.grey,
                                   fontWeight: FontWeight.w500),
                             ),
                             Text(
-                              "${widget.order?.adress_resiver}",
+                              "${widget.order?.adress_another ?? ""}",
                               style: TextStyle(
                                   fontSize: 14, fontWeight: FontWeight.bold),
                             )
@@ -282,7 +306,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Image.asset(
-                        "assets/images/address_icon.png",
+                        "assets/images/note_icon.png",
                         width: 32,
                         height: 32,
                       ),
@@ -295,7 +319,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "Address".tr(),
+                              "الملاحظة",
                               style:
                                   TextStyle(fontSize: 12, color: Colors.grey),
                             ),
@@ -339,7 +363,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                                       fontSize: 12, color: Colors.grey),
                                 ),
                                 Text(
-                                  " ${widget.order?.total_price} " + "cr".tr(),
+                                  convertNumbersString("${widget.order?.total_price}") +" "+ "cr".tr(),
                                   style: TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold),
@@ -374,7 +398,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                                   fontWeight: FontWeight.w500),
                             ),
                             Text(
-                              "${widget.order?.price_shipping}",
+                              convertNumbersString("${widget.order?.price_shipping}"),
                               style: TextStyle(
                                   fontSize: 14, fontWeight: FontWeight.bold),
                             )
@@ -444,7 +468,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                       ),
                       InkWell(
                         onTap: () =>
-                            launchURL("tel://${widget.order?.phone_resiver}"),
+                            launchURL("tel://${widget.order?.account_phone}"),
                         child: Container(
                           height: 48,
                           width: (width / 2) - 32 - 8,

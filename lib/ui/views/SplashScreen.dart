@@ -3,12 +3,13 @@ import 'dart:io';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:hadaf/data/api_provider.dart';
-import 'package:hadaf/data/userData.dart';
-import 'package:hadaf/ui/views/home.dart';
-import 'package:hadaf/ui/views/login.dart';
-import 'package:hadaf/ui/widgets/logo.dart';
-import 'package:hadaf/utils/colors.dart';
+import '/data/api_provider.dart';
+import '/data/userData.dart';
+import '/ui/views/home.dart';
+import '/ui/views/login.dart';
+import '/ui/widgets/logo.dart';
+import '/utils/colors.dart';
+import '/data/data_constatnts.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -24,6 +25,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
+    getDomain();
   }
   _initFireBase()async{
     int userId = await getUserId() ;
@@ -57,24 +59,47 @@ class _SplashScreenState extends State<SplashScreen> {
     }
   }
   Timer _timer;
+
+  void getDomain(){
+    // bindDomain("http://192.168.43.15:8080");
+    _timer = new Timer(
+        Duration(seconds: 1),
+            ()async {
+          this.iOS_Permission();
+          String token = await getToken();
+          if(token == null ){
+            Navigator.of(context)
+                .pushReplacement(MaterialPageRoute(builder: (context) => Login()));
+          }else{
+            _initFireBase();
+            Navigator.of(context)
+                .pushReplacement(MaterialPageRoute(builder: (context) => Home()));
+          }
+        });
+
+    ApiProvider.getDomain(onError: (){} , onSuccess: (domain){
+      bindDomain(domain.domain);
+      _timer = new Timer(
+          Duration(seconds: 1),
+              ()async {
+            this.iOS_Permission();
+            String token = await getToken();
+            if(token == null ){
+              Navigator.of(context)
+                  .pushReplacement(MaterialPageRoute(builder: (context) => Login()));
+            }else{
+              _initFireBase();
+              Navigator.of(context)
+                  .pushReplacement(MaterialPageRoute(builder: (context) => Home()));
+            }
+          });
+    });
+  }
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
-    _timer = new Timer(
-        Duration(seconds: 2),
-        ()async {
-            this.iOS_Permission();
-           String token = await getToken();
-           if(token == null ){
-             Navigator.of(context)
-                 .pushReplacement(MaterialPageRoute(builder: (context) => Login()));
-           }else{
-             _initFireBase();
-             Navigator.of(context)
-                 .pushReplacement(MaterialPageRoute(builder: (context) => Home()));
-           }
-        });
+
     return Scaffold(
       key: _scaffoldKey,
       body: Container(

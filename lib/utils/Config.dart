@@ -5,8 +5,8 @@ import 'package:url_launcher/url_launcher.dart';
 const bool DEBUG_MODE = true ;
 
 /* firebase Mail and Password
-password :Hadaf2224
-email :hadaf.firebase@gmail.com
+password :Assel2224
+email :assel.firebase@gmail.com
 
  */
 launchURL(String url) async {
@@ -16,6 +16,8 @@ launchURL(String url) async {
     throw 'Could not launch $url';
   }
 }
+
+//api-iraqsoft.com:32369
 
 class FilterTypes{
   static const int BY_PHONE = 1 ;

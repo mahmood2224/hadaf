@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:hadaf/utils/colors.dart';
+import '/utils/colors.dart';
 
 class DropDownModel{
   String name ;

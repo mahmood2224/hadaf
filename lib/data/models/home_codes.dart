@@ -39,12 +39,14 @@ class Code {
   String pin_code;
   String updated_at;
   int user_id;
+  int type ;
 
   Code(
       {this.account_code,
       this.account_name,
       this.created_at,
       this.id,
+        this.type,
       this.pin_code,
       this.updated_at,
       this.user_id});
@@ -55,6 +57,7 @@ class Code {
       account_name: json['account_name'],
       created_at: json['created_at'],
       id: json['id'],
+      type: int.parse("${json['type']??6}"),
       pin_code: json['pin_code'],
       updated_at: json['updated_at'],
       user_id: json['user_id'],
@@ -175,6 +178,7 @@ class CodesTypes {
   static const int PENDING = 1;
   static const int IN_PROGRESS = 2;
   static const int DELIVERED = 6;
+  static const int DRIVER_PAID = 7;
   static const int RETURNED = 4;
   static const int RETURNED_CLIENT = 5;
   static const int DELIVERED_PAID = 3;
@@ -194,6 +198,8 @@ class CodesTypes {
         return "returned_client".tr();
       case DELIVERED_PAID:
         return "deliverd_paid".tr();
+      case DRIVER_PAID:
+        return "تم تسديد السائق";
       default:
         return "";
     }
@@ -241,5 +247,9 @@ class CodesTypes {
 
 
 }
+
+//Users Types
+const int CLIENT = 6 ;
+const int DRIVER = 8 ;
 
 

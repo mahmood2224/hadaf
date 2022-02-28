@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hadaf/utils/colors.dart';
+import '/utils/colors.dart';
 
 class Loading extends StatelessWidget {
   double height ;

@@ -2,16 +2,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:hadaf/data/api_provider.dart';
-import 'package:hadaf/data/models/home_codes.dart';
-import 'package:hadaf/data/models/notification_models.dart';
-import 'package:hadaf/data/userData.dart';
-import 'package:hadaf/ui/views/add_pincode.dart';
-import 'package:hadaf/ui/views/product.dart';
-import 'package:hadaf/ui/widgets/Loading.dart';
-import 'package:hadaf/ui/widgets/logo.dart';
-import 'package:hadaf/utils/Dialog.dart';
-import 'package:hadaf/utils/colors.dart';
+import '/data/api_provider.dart';
+import '/data/models/home_codes.dart';
+import '/data/models/notification_models.dart';
+import '/data/userData.dart';
+import '/ui/views/add_pincode.dart';
+import '/ui/views/product.dart';
+import '/ui/widgets/Loading.dart';
+import '/ui/widgets/logo.dart';
+import '/utils/Dialog.dart';
+import '/utils/colors.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 class NotificationPage extends StatefulWidget {

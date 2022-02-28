@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:hadaf/data/models/home_codes.dart';
+import '/data/models/home_codes.dart';
 
 class CountsModelResponse {
     List<Count> data;
@@ -31,15 +31,17 @@ class Count {
     int count;
     int status;
     String status_name;
+    String total_price ;
     Color color ;
     String icon ;
 
-    Count({this.count, this.status, this.status_name ,this.color ,this.icon});
+    Count({this.count, this.status, this.total_price ,this.status_name ,this.color ,this.icon});
 
     factory Count.fromJson(Map<String, dynamic> json) {
         return Count(
-            count: json['count'], 
+            count: json['count']??0,
             status: json['status'], 
+            total_price: "${json['total_price']??0}" == null ? "0" :"${json['total_price']??0}",
             status_name: json['status_name'],
             color: CodesTypes.getTypeColor(json['status']),
             icon: CodesTypes.getTypeIcon(json['status'])

@@ -11,3 +11,4 @@ const Color PRIMARY_50 = Color(0xaaE30713);
 const Color GREY_COLOR = Color(0x11000000);
 const Color GREY_COLOR100 = Color(0x11000000);
 const Color BOTTOM_BAR_COLOR = Color(0xffFAFAFA);
+const Color BORDER_COLOR = Color(0xffC3CACB);

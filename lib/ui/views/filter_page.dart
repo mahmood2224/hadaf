@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:hadaf/data/api_provider.dart';
-import 'package:hadaf/data/models/node_zone_model.dart';
-import 'package:hadaf/data/models/zones.dart';
-import 'package:hadaf/ui/views/pending.dart';
-import 'package:hadaf/ui/widgets/Loading.dart';
-import 'package:hadaf/ui/widgets/delivery_button.dart';
-import 'package:hadaf/ui/widgets/delivery_drop_down.dart';
-import 'package:hadaf/ui/widgets/delivery_text_field.dart';
-import 'package:hadaf/utils/Config.dart';
-import 'package:hadaf/utils/colors.dart';
+import '/data/api_provider.dart';
+import '/data/models/counts_model.dart';
+import '/data/models/node_zone_model.dart';
+import '/data/models/zones.dart';
+import '/ui/views/pending.dart';
+import '/ui/widgets/Loading.dart';
+import '/ui/widgets/auto_complete_text_field.dart';
+import '/ui/widgets/delivery_button.dart';
+import '/ui/widgets/delivery_drop_down.dart';
+import '/ui/widgets/delivery_text_field.dart';
+import '/utils/Config.dart';
+import '/utils/colors.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:hadaf/data/node_api_provider.dart';
+import '/data/node_api_provider.dart';
 
 class FilterPage extends StatefulWidget {
   Function onResponse ;
@@ -27,13 +29,14 @@ class _FilterPageState extends State<FilterPage> {
   GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   TextEditingController _searchText = new TextEditingController();
+  TextEditingController _zoneText = new TextEditingController();
   int _selectedRadio = 1;
   bool _isZones = false ;
   List<NodeZone> zones = [] ;
   FilterResult _result = new FilterResult() ;
   List<ItemModel> filterValues = [
     ItemModel(name: "filter_by_name".tr(), value: FilterTypes.BY_PHONE),
-    // ItemModel(name: "filter_by_id".tr(), value: FilterTypes.BY_ID),
+    ItemModel(name: "filter_by_id".tr(), value: FilterTypes.BY_ID),
     ItemModel(name: "flutter_by_zosne".tr(), value: FilterTypes.BY_ZONE),
   ];
   @override
@@ -101,7 +104,7 @@ class _FilterPageState extends State<FilterPage> {
                    _isZones ?DeliveryDropdown(
                      height: 45,
                      width: width/1.2,
-                     items: [DropDownModel(name: "please_select_zone".tr() , object: null)  ,...this.zones.map((e) => DropDownModel(name: e.zoon_name , object: e)).toList()],
+                      items: [DropDownModel(name: "من فضلك اختر المنطقة", object: null) , ...this.zones.map((e) => DropDownModel(name: e.zoon_name , object: e)).toList()],
                      onSelectItem: (value){
                         _result.zone = value ;
                      },
@@ -163,8 +166,9 @@ class _FilterPageState extends State<FilterPage> {
             onPressed: (){
               _result.type = _selectedRadio ;
               _result.value = _searchText.text ;
-              widget.onResponse(_result);
               Navigator.pop(context);
+              widget.onResponse(_result);
+
             },
           ),
         ),

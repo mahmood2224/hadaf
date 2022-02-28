@@ -8,11 +8,12 @@ class DeliveryTextField extends StatelessWidget {
   double height ;
   bool obscure ;
   String label ;
+  int liens ;
   Color labelColor ;
   Color backGroundColor ;
   TextInputType textType ;
 
-  DeliveryTextField({this.controller, this.hint="", this.width=200, this.height,
+  DeliveryTextField({this.controller, this.hint="", this.liens = 1 ,this.width=200, this.height,
       this.obscure=false , this.label = "label" ,this.labelColor , this.backGroundColor , this.textType});
 
   @override
@@ -26,7 +27,6 @@ class DeliveryTextField extends StatelessWidget {
           Text(this.label , style: TextStyle(fontSize: 13 , fontWeight: FontWeight.w500 ,color:this.labelColor ?? Colors.black),),
           SizedBox(height: 6,),
           Container(
-            height: height??45,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
               color: this.backGroundColor??Color(0x22000000)
@@ -36,6 +36,8 @@ class DeliveryTextField extends StatelessWidget {
               controller:controller ?? new TextEditingController(),
               textAlign: TextAlign.start,
               obscureText: obscure,
+              minLines: liens,
+               maxLines: liens,
               keyboardType: this.textType ?? TextInputType.text,
               style: TextStyle(fontSize: 15 , fontWeight: FontWeight.bold,color: Colors.black),
               decoration: InputDecoration(
